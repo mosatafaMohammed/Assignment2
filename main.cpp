@@ -1,40 +1,69 @@
-
-#include "numerical_Tic_Tac_Toe.h"
 #include <iostream>
-#include <vector>
-#include <ctime>
+#include "BoardGame_Classes.h"
+#include"Four_In_ARow.h"
+
 
 using namespace std;
 
 int main() {
-    // تهيئة العشوائية
-    srand(static_cast<unsigned int>(time(nullptr)));
+    int choice;
+    Player<char>* players[2];
+    FourInARow <char>* B = new FourInARow <char>();
+    string playerXName, player2Name;
 
-    // إنشاء لوحة NumericalBoard
-    NumericalBoard<int> board(3, 3); // لوحة 3x3
+    cout << "Welcome to FCAI X-O Game. :)\n";
 
-    // إعداد الأرقام المتاحة لكل لاعب
-    vector<int> player1_numbers = {1, 3, 5, 7, 9}; // أرقام فردية
-    vector<int> player2_numbers = {2, 4, 6, 8};    // أرقام زوجية
+    // Set up player 1
+    cout << "Enter Player X name: ";
+    cin >> playerXName;
+    cout << "Choose Player X type:\n";
+    cout << "1. Human\n";
+    cout << "2. Random Computer\n";
+    cin >> choice;
 
-    // إنشاء اللاعبين
-    NumericalPlayer<int> player1("Player 1", 1, player1_numbers);
-    RandomNumericalPlayer<int> player2("Player 2 (Random)", player2_numbers);
+    switch(choice) {
+        case 1:
+            players[0] = new FourInARowPlayer<char>(playerXName, 'X');
+            break;
+        case 2:
+            players[0] = new FourInARowRandomPlayer<char>('X');
+            break;
+        default:
+            cout << "Invalid choice for Player 1. Exiting the game.\n";
+            return 1;
+    }
 
-    // تعيين اللوحة للاعبين
-    player1.setBoard(&board);
-    player2.setBoard(&board);
+    // Set up player 2
+    cout << "Enter Player 2 name: ";
+    cin >> player2Name;
+    cout << "Choose Player 2 type:\n";
+    cout << "1. Human\n";
+    cout << "2. Random Computer\n";
+    cin >> choice;
 
-    // إعداد اللاعبين
-    Player<int>* players[2] = {&player1, &player2};
+    switch(choice) {
+        case 1:
+            players[1] = new FourInARowPlayer<char>(player2Name, 'O');
+            break;
+        case 2:
+            players[1] = new FourInARowRandomPlayer<char>('O');
+            break;
+        default:
+            cout << "Invalid choice for Player 2. Exiting the game.\n";
+            return 1;
+    }
 
-    // عرض اللوحة في البداية
-    cout << "Numerical TicTacToe Game Starts!\n";
-    board.display_board();
+    // Create the game manager and run the game
+    GameManager<char> FourInRow(B, players);
+    FourInRow.run();
 
-    // إنشاء مدير اللعبة وتشغيل اللعبة
-    GameManager<int> gameManager(&board, players);
-    gameManager.run();
+    // Clean up
+    delete B;
+    for (int i = 0; i < 2; ++i) {
+        delete players[i];
+    }
 
     return 0;
 }
+
+   
